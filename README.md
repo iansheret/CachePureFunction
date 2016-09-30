@@ -100,7 +100,7 @@ CachePureFunction will detect the change, and reevaluate the function.
 
 ```
 >> y = CachePureFunction(@ScaleAndOffset, 2); fprintf('y = %i\n', y);
-y = 8
+y = 10
 ```
 
 ### Specifying a cache directory
