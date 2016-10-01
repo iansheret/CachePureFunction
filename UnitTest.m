@@ -16,7 +16,6 @@ fclose(fid);
 end
 
 function teardownOnce(testCase)
-rmdir('Cache', 's');
 RemoveFunctions();
 RemoveHashFiles();
 end
@@ -87,6 +86,7 @@ verifyEqual(testCase, a, 8);
 verifyEqual(testCase, b, 8);
 d = dir(fullfile('Cache', 'CallOffset_*.mat'));
 verifyEqual(testCase, length(d), 1);
+rmdir('Cache', 's');
 end
 
 function TestCacheUpdatesWithNoReturnArgs(testCase)
@@ -98,4 +98,16 @@ CachePureFunction(@CallOffset, 7);
 b = ans;
 verifyEqual(testCase, a, 8);
 verifyEqual(testCase, b, 9);
+end
+
+function TestSpecifiedFolderIsUsedFromObjectWrapper(testCase)
+MakeOffsetFunction(1);
+cache = CustomCache('Cache');
+a = cache(@CallOffset, 7);
+b = cache(@CallOffset, 7);
+verifyEqual(testCase, a, 8);
+verifyEqual(testCase, b, 8);
+d = dir(fullfile('Cache', 'CallOffset_*.mat'));
+verifyEqual(testCase, length(d), 1);
+rmdir('Cache', 's');
 end
