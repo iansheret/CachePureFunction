@@ -111,10 +111,10 @@ y = CachePureFunction('Cache', @ScaleAndOffset, 2);
 ```
 This will place the cache file in a folder named `Cache`. If this folder doesn't already exist it will be created.
 
-If I'm going cache a few results in sequence, I make an anonymous function so I don't have to keep repeating the name of the cache folder:
+If are a few results which need to be cached, it's annoying to have to keep repeating the folder name. There's a helper class to deal with this, `CustomCache`. Construct an instance of this class, specifying the cache folder, and then just use this instance in place of the normal function:
 
 ```matlab
-cache = @(varargin) CachePureFunction('Cache', varargin{:});
+cache = CustomCache('MyCacheFolder');
 y = cache(@SlowFunction_1, x);
 z = cache(@SlowFunction_2, y);
 ...
