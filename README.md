@@ -123,7 +123,7 @@ z = cache(@SlowFunction_2, y);
 ### How does it work?
 The target function and input arguments are hashed (using [DataHash](https://www.mathworks.com/matlabcentral/fileexchange/31272-datahash) by Jan Simon), and this is used to generate a cache filename. If the file doesn't exist, the target function is evaluated, and the results are saved. If it does exist, the result is loaded from file.
 
-To check for changes in the source code, the first evaluation makes list of all the functions which are used , and stores this in the cache file. When the cache data is loaded, the modification timestamp on each function is checked; if it's been modified since the cache file was created, then the cache must be out of date.
+To check for changes in the source code, the first evaluation makes a list of all the functions which are used , and stores this in the cache file. When the cache data is loaded, the modification timestamp on each function is checked; if it's been modified since the cache file was created, then the cache must be out of date.
 
 To get the list of all functions used, `clear functions` is called before the evaluation, and `inmem` is called after. Clearing all the functions like this will cost some time, but since the target function is slow anyway I think it's a reasonable trade off.
 
