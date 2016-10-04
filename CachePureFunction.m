@@ -95,6 +95,10 @@ if update_needed
     % dependencies.
     clear functions
     
+    % Functions in current stack won't get cleared. Store these so we can
+    % exclude them later.
+    [M0, MEX0] = inmem('-completenames');
+    
     % Execute the command. We need to treat 'no output arguments' as a
     % special case.
     if nargout==0
@@ -106,9 +110,14 @@ if update_needed
     
     % Form a list of dependencies
     [M, MEX] = inmem('-completenames');
-    deps = [M; MEX];
+    
+    % Remove spurious items (i.e. functions which are in memory because
+    % they're in the current stack, not because they are dependencies).
+    M   = setdiff(M, M0);
+    MEX = setdiff(MEX, MEX0); 
     
     % Save
+    deps = [M; MEX];
     save(filename, 'varargout', 'deps');
 
 end

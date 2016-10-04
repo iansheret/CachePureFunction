@@ -12,7 +12,6 @@ fprintf(fid, 'y = Offset(x);\n');
 fprintf(fid, 'function_evaluated = true;\n');
 fprintf(fid, 'end\n');
 fclose(fid);
-
 end
 
 function teardownOnce(testCase)
@@ -31,9 +30,19 @@ fclose(fid);
 pause(1);
 end
 
+function MakeCallingFunction()
+fid = fopen('TopLevelFunction.m', 'w');
+fprintf(fid, 'function TopLevelFunction\n');
+fprintf(fid, 'y = CachePureFunction(@CallOffset, 7);\n');
+fprintf(fid, 'end\n');
+fclose(fid);
+pause(1);
+end
+
 function RemoveFunctions
 delete('Offset.m');
 delete('CallOffset.m');
+delete('TopLevelFunction.m');
 end
 
 function RemoveHashFiles
@@ -111,3 +120,22 @@ d = dir(fullfile('Cache', 'CallOffset_*.mat'));
 verifyEqual(testCase, length(d), 1);
 rmdir('Cache', 's');
 end
+
+function TestCallingFunctionIsNotADependency(testCase)
+global function_evaluated
+
+MakeCallingFunction();
+MakeOffsetFunction(1);
+
+function_evaluated = false;
+TopLevelFunction();
+verifyEqual(testCase, function_evaluated, true);
+
+function_evaluated = false;
+MakeCallingFunction();
+TopLevelFunction();
+verifyEqual(testCase, function_evaluated, false);
+
+end
+
+
