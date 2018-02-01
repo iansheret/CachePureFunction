@@ -21,8 +21,12 @@ function varargout = CachePureFunction(varargin)
 %   it depends on) is modified, then the result is reevaluated. This check
 %   is based on the modification timestamps on the function files and the
 %   cache file.
+%
+%   If any of the input arguments are valid filenames which match existing
+%   files, the modification timestamp of these files is also checked
+%   against the cache timestamp.
 
-%   Copyright 2016 Ian Sheret
+%   Copyright 2016-2018 Ian Sheret
 
 % Parse inputs
 if nargin<1
@@ -82,6 +86,19 @@ if ~isempty(d)
         if d(1).datenum >= t_cache
             update_needed = true;
             break
+        end
+    end
+    
+    % Check if any of the input arguments is obviously a filename. If so,
+    % check if that file has been modified.
+    for arg=args
+        is_text = isstring(arg{1}) || ischar(arg{1});
+        if is_text && exist(arg{1}, 'file')==2
+            d = dir(arg{1});
+            if d(1).datenum >= t_cache
+                update_needed = true;
+                break
+            end
         end
     end
     
