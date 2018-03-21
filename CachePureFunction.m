@@ -66,7 +66,12 @@ hash = DataHash({command, args, nargout});
 
 % Get cache filename
 command_info = functions(command);
-filename = fullfile(folder, [command_info.function, '_', hash, '.mat']);
+if strcmp(command_info.type, 'anonymous')
+    header = 'anonymous';
+else
+    header = command_info.function;
+end
+filename = fullfile(folder, [header, '_', hash, '.mat']);
 
 % Check if a cache exists, and if so check if it's up to date.
 d = dir(filename);
